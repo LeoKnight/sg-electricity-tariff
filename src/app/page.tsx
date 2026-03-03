@@ -1,64 +1,100 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
+import { TariffDataPoint, fetchDomesticTariff } from "@/lib/parseCSV";
+import {
+  StatsResult,
+  QuarterlyData,
+  YoyData,
+  computeStats,
+  computeQuarterlyData,
+  computeYoyData,
+} from "@/lib/statistics";
+import { useI18n } from "@/lib/i18n";
+import StatsCards from "@/components/StatsCards";
+import TariffChart from "@/components/TariffChart";
+import QuarterlyChart from "@/components/QuarterlyChart";
+import YoyChart from "@/components/YoyChart";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import ShareButton from "@/components/ShareButton";
 
 export default function Home() {
+  const { t } = useI18n();
+  const [data, setData] = useState<TariffDataPoint[] | null>(null);
+  const [stats, setStats] = useState<StatsResult | null>(null);
+  const [quarterly, setQuarterly] = useState<QuarterlyData[]>([]);
+  const [yoy, setYoy] = useState<YoyData[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchDomesticTariff()
+      .then((tariff) => {
+        setData(tariff);
+        setStats(computeStats(tariff));
+        setQuarterly(computeQuarterlyData(tariff));
+        setYoy(computeYoyData(tariff));
+      })
+      .catch((e) => setError(e.message));
+  }, []);
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-red-500">{t.loadingError}: {error}</p>
+      </div>
+    );
+  }
+
+  if (!data || !stats) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="flex items-center gap-3 text-gray-500">
+          <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          {t.loading}
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-[#f8fafc]">
+      <header className="border-b border-gray-200 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-3 sm:py-6 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white font-bold text-sm sm:text-lg">
+                SG
+              </div>
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-xl font-bold text-gray-900 truncate">
+                  {t.title}
+                </h1>
+                <p className="text-xs sm:text-sm text-gray-500 truncate">
+                  {t.subtitle}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <ShareButton />
+              <LanguageSwitcher />
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      <main className="mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-8 lg:px-8 space-y-4 sm:space-y-6">
+        <StatsCards stats={stats} />
+        <TariffChart data={data} />
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
+          <QuarterlyChart data={quarterly} />
+          <YoyChart data={yoy} />
         </div>
+        <footer className="text-center text-xs text-gray-400 pt-2 pb-6 sm:pt-4 sm:pb-8">
+          {t.footer}
+        </footer>
       </main>
     </div>
   );
