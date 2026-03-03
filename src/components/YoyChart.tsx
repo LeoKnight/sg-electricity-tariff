@@ -32,7 +32,7 @@ export default function YoyChart({ data }: Props) {
         const val = params.find((p) => p.value != null && p.seriesName === t.yoySeriesTrend);
         if (!val) return "";
         const sign = val.value! >= 0 ? "+" : "";
-        return `<b>${val.axisValue}</b><br/>${t.yoyTooltipLabel}: <b>${sign}${val.value}%</b>`;
+        return `<b>${val.axisValue}</b><br/>${t.yoyTooltipLabel}: <b>${sign}${Number(val.value).toFixed(2)}%</b>`;
       },
     },
     grid: {
@@ -60,7 +60,7 @@ export default function YoyChart({ data }: Props) {
       splitLine: { lineStyle: { type: "dashed" as const, color: "#f3f4f6" } },
       axisLabel: {
         fontSize: isMobile ? 9 : 12,
-        formatter: (v: number) => `${v > 0 ? "+" : ""}${v}%`,
+        formatter: (v: number) => `${v > 0 ? "+" : ""}${v.toFixed(2)}%`,
       },
     },
     series: [

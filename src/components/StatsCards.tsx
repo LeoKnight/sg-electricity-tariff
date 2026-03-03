@@ -35,25 +35,25 @@ export default function StatsCards({ stats }: { stats: StatsResult }) {
     <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4">
       <Card
         title={t.currentTariff}
-        value={`${stats.current.value}¢`}
+        value={`${stats.current.value.toFixed(2)}¢`}
         subtitle={`${formatDate(stats.current.date, t.months)} · cents/kWh`}
         accent="text-blue-600"
       />
       <Card
         title={t.yoyChange}
-        value={`${yoySign}${stats.yoyChange.toFixed(1)}%`}
+        value={`${yoySign}${stats.yoyChange.toFixed(2)}%`}
         subtitle={`${yoyArrow} ${t.comparedToLastYear}`}
         accent={yoyColor}
       />
       <Card
         title={t.highestEver}
-        value={`${stats.highest.value}¢`}
+        value={`${stats.highest.value.toFixed(2)}¢`}
         subtitle={formatDate(stats.highest.date, t.months)}
         accent="text-orange-600"
       />
       <Card
         title={t.lowestEver}
-        value={`${stats.lowest.value}¢`}
+        value={`${stats.lowest.value.toFixed(2)}¢`}
         subtitle={formatDate(stats.lowest.date, t.months)}
         accent="text-emerald-600"
       />

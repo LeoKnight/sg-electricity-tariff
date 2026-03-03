@@ -22,7 +22,7 @@ export default function QuarterlyChart({ data }: Props) {
       confine: true,
       formatter: (params: Array<{ axisValue: string; value: number; color: string }>) => {
         const p = params[0];
-        return `<b>${p.axisValue}</b><br/>${t.quarterlyTooltipLabel}: <b>${p.value} ¢/kWh</b>`;
+        return `<b>${p.axisValue}</b><br/>${t.quarterlyTooltipLabel}: <b>${Number(p.value).toFixed(2)} ¢/kWh</b>`;
       },
     },
     grid: {
@@ -46,7 +46,7 @@ export default function QuarterlyChart({ data }: Props) {
       nameTextStyle: { fontSize: isMobile ? 10 : 12, padding: [0, isMobile ? 20 : 40, 0, 0] },
       min: (v: { min: number }) => Math.floor(v.min - 2),
       splitLine: { lineStyle: { type: "dashed" as const, color: "#f3f4f6" } },
-      axisLabel: { fontSize: isMobile ? 9 : 12 },
+      axisLabel: { fontSize: isMobile ? 9 : 12, formatter: (v: number) => v.toFixed(2) },
     },
     series: [
       {

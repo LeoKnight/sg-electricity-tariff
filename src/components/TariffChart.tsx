@@ -55,7 +55,7 @@ export default function TariffChart({ data }: Props) {
           if (p.value != null && p.seriesName !== "_lower" && p.seriesName !== "_band") {
             html += `<div style="display:flex;align-items:center;gap:6px">
               <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${p.color}"></span>
-              ${p.seriesName}: <b>${p.value} ¢/kWh</b>
+              ${p.seriesName}: <b>${Number(p.value).toFixed(2)} ¢/kWh</b>
             </div>`;
           }
         }
@@ -107,7 +107,7 @@ export default function TariffChart({ data }: Props) {
       nameTextStyle: { fontSize: isMobile ? 10 : 12, padding: [0, isMobile ? 20 : 40, 0, 0] },
       min: (v: { min: number }) => Math.floor(v.min - 2),
       splitLine: { lineStyle: { type: "dashed" as const, color: "#f3f4f6" } },
-      axisLabel: { fontSize: isMobile ? 9 : 12 },
+      axisLabel: { fontSize: isMobile ? 9 : 12, formatter: (v: number) => v.toFixed(2) },
     },
     series: [
       {

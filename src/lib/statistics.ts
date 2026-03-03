@@ -25,7 +25,7 @@ export function computeStats(data: TariffDataPoint[]): StatsResult {
   const lastYearDate = `${parseInt(current.date.slice(0, 4)) - 1}-${currentMonth}`;
   const lastYearPoint = data.find((d) => d.date === lastYearDate);
   const yoyChange = lastYearPoint
-    ? ((current.value - lastYearPoint.value) / lastYearPoint.value) * 100
+    ? parseFloat((((current.value - lastYearPoint.value) / lastYearPoint.value) * 100).toFixed(2))
     : 0;
 
   let highest = data[0];
@@ -57,7 +57,7 @@ export function computeMovingAverage(
   return data.map((_, i) => {
     if (i < window - 1) return null;
     const slice = data.slice(i - window + 1, i + 1);
-    return slice.reduce((s, d) => s + d.value, 0) / window;
+    return parseFloat((slice.reduce((s, d) => s + d.value, 0) / window).toFixed(2));
   });
 }
 
