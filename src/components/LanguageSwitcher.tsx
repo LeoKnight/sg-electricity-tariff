@@ -16,7 +16,7 @@ export default function LanguageSwitcher() {
         <button
           key={opt.value}
           onClick={() => setLocale(opt.value)}
-          className={`rounded-md px-2.5 py-1 font-medium transition-colors ${
+          className={`rounded-md px-2.5 py-1 font-medium whitespace-nowrap transition-colors ${
             locale === opt.value
               ? "bg-white text-blue-600 shadow-sm"
               : "text-gray-500 hover:text-gray-700"
